@@ -1,6 +1,8 @@
-from flask import Flask, request
+from flask import Flask, request, send_file
 
 import generator
+
+import os
 
 app = Flask(__name__)
 
@@ -96,3 +98,18 @@ def generate():
             "code": 500,
             "message": "Internal Server Error"
         }
+
+# get output file
+@app.route("/files/output/<filename>", methods=["GET"])
+def get(filename):
+    output_file = os.path.join(os.path.dirname(
+        os.path.abspath(__file__)), "..", "output", filename)
+    
+    if not os.path.exists(output_file):
+        return {
+            "status": False,
+            "code": 404,
+            "message": "File not found!"
+        }
+    else:
+        return send_file(output_file, mimetype="image/jpg")
