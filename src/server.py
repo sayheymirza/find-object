@@ -36,6 +36,15 @@ def generate():
             "code": 400,
             "message": "Folders must be provided!"
         }
+    else:
+        # check assets filders exists
+        for folder in folders:
+            if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", folder)):
+                return {
+                    "status": False,
+                    "code": 400,
+                    "message": "Folder {} not found!".format(folder)
+                }
 
     if len(output_size) != 2:
         return {
