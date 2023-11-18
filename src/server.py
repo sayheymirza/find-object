@@ -110,7 +110,7 @@ def generate():
 
 # get output file
 @app.route("/files/output/<filename>", methods=["GET"])
-def get(filename):
+def get_output(filename):
     output_file = os.path.join(os.path.dirname(
         os.path.abspath(__file__)), "..", "output", filename)
     
@@ -122,3 +122,32 @@ def get(filename):
         }
     else:
         return send_file(output_file, mimetype="image/jpg")
+    
+# get assets walk as tree
+@app.route("/api/v1/assets", methods=["GET"])
+def get_assets_walk():
+    '''
+    [
+        {
+            "name": "<folder name>",
+            "assets": [...]
+        }
+    ]
+    '''
+    output = []
+
+    for folder in os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets")):
+        if os.path.isdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", folder)):
+            output.append({
+                "name": folder,
+                "assets": os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", folder))
+            })
+
+    return {
+        "status": True,
+        "code": 200,
+        "message": "Assets tree is here",
+        "data": output
+    }
+
+    
